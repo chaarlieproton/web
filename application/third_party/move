@@ -1,0 +1,7 @@
+move 
+emil
+amount
+
+
+move("", "email", amount)
+send email
