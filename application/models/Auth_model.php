@@ -33,6 +33,7 @@ class Auth_model extends CI_Model
 
  	function auth($name,$password,$ip)
     {
+		$currnecy_detail = array();
         $password1 = sha1($password);
         $this->db->where('email',$name);
         $this->db->where('password',$password1);
@@ -41,7 +42,7 @@ class Auth_model extends CI_Model
         $query = $this->db->get('users');
         if($query->num_rows()==1)
         {
-            $currnecy_detail=$this->currencylist();
+            
             
             foreach ($query->result() as $row)
             {
@@ -54,16 +55,35 @@ class Auth_model extends CI_Model
                     'user_id'               =>   $row->id,
                     'tfa_key'               =>   $row->tfa_key,
                     'ip_address'            =>   $ip,
-                    'currency'              =>   $currnecy_detail[0]->id,
-                    'currencyname'          =>   $currnecy_detail[0]->short_name,
-                    'rpc_host'              =>   $currnecy_detail[0]->host,
-                    'rpc_user'              =>   $currnecy_detail[0]->user,
-                    'rpc_pass'              =>   $currnecy_detail[0]->pass,
-                    'rpc_port'              =>   $currnecy_detail[0]->port,
+				//	'currency'              =>   $currnecy_detail[0]->id,
+                 //   'currencyname'          =>   $currnecy_detail[0]->short_name,
+                  //  'rpc_host'              =>   $currnecy_detail[0]->host,
+                   // 'rpc_user'              =>   $currnecy_detail[0]->user,
+                   // 'rpc_pass'              =>   $currnecy_detail[0]->pass,
+                   // 'rpc_port'              =>   $currnecy_detail[0]->port,
                     'logged_in'             =>   TRUE,
                 );
             }
-
+			$userid = $data['user_id'];
+			
+			if($userid >  RPC_CUT_OFF_VALUE)
+			{
+				$currnecy_detail=$this->currencylist(2);
+			}
+			else
+			{
+				$currnecy_detail=$this->currencylist(1);
+			}
+			if(count($currnecy_detail)>0)
+			{
+				$data['currency']              =   $currnecy_detail[0]->id,
+				$data['currencyname']          =   $currnecy_detail[0]->short_name,
+				$data['rpc_host']              =   $currnecy_detail[0]->host,
+				$data['rpc_user']              =   $currnecy_detail[0]->user,
+				$data['rpc_pass']              =   $currnecy_detail[0]->pass,
+				$data['rpc_port']              =   $currnecy_detail[0]->port,
+			}
+			
             $this->insertlogindetail($data['user_id'],$ip);
             $this->updatelogindetail($data['user_id']);
 
@@ -161,7 +181,7 @@ class Auth_model extends CI_Model
         $userid=$this->db->update('users', $data);
         return $userid;
     }
-
+/*
     function currencylist()
     {
         $this->db->select("*");
@@ -172,7 +192,20 @@ class Auth_model extends CI_Model
 
         return $row;
     }
+*/
+	
+    function currencylist($sel_value)
+    {
+        $this->db->select("*");
+        $this->db->from("currency_list");
+        $this->db->where("status",'1');
+        $this->db->where("sel_val",$sel_value);
+	$q = $this->db->get();
+        $row = $q->result();
 
+        return $row;
+    }
+	
     function savenewaddress($address)
     {
         $user_id=$this->session->userdata['user_id'];

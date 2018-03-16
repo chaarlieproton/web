@@ -76,15 +76,17 @@ CREATE TABLE `currency_list` (
   `pass` varchar(50) NOT NULL,
   `port` varchar(50) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '0',
-  `logo` varchar(255) NOT NULL
+  `logo` varchar(255) NOT NULL,
+  `sel_val` tinyint NOT NULL default '1',
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `currency_list`
 --
 
-INSERT INTO `currency_list` (`id`, `short_name`, `name`, `host`, `user`, `pass`, `port`, `status`, `logo`) VALUES
-(1, 'PBCZ', 'PowerCoinZ', 'localhost', 'test', 'test123', '18336', 1, 'ritzcoin-favicon.png');
+INSERT INTO `currency_list` (`id`, `short_name`, `name`, `host`, `user`, `pass`, `port`, `status`, `logo`,`sel_val`) VALUES
+(1, 'PBCZ', 'PowerCoinZ', 'localhost', 'test', 'test123', '18336', 1, 'ritzcoin-favicon.png',1),
+(2, 'PBCZ', 'PowerCoinZ', 'localhost', 'test2', 'test1234', '18337', 1, 'ritzcoin-favicon.png',2);
 
 -- --------------------------------------------------------
 
